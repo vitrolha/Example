@@ -1,0 +1,55 @@
+﻿﻿
+@inject Radzen.DialogService DialogService
+@inject IToDoRepository toDoRepository
+
+@code {
+    [Parameter]
+    public ToDo Appointment { get; set; }
+
+    ToDo model = new ToDo();
+
+    protected override void OnParametersSet()
+    {
+        model = Appointment;
+    }
+
+    async void OnSubmit(ToDo model)
+    {
+        await toDoRepository.Update(model.Id, model);
+        DialogService.Close(model);
+    }
+
+    async void OnDelete()
+    {
+        await toDoRepository.Delete(model.Id);
+        DialogService.Close();
+    }
+}
+
+<RadzenTemplateForm TItem="ToDo" Data="@model" Submit=@OnSubmit>
+    <RadzenStack Gap="1rem">
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center" Wrap="FlexWrap.Wrap">
+            <RadzenLabel Text="Title" Style="width: 6rem;" />
+            <RadzenTextBox @bind-Value="@model.Title" Name="Text" Style="width: 12rem;" />
+            <RadzenRequiredValidator Component="Text" Text="Title is required" />
+        </RadzenStack>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center" Wrap="FlexWrap.Wrap">
+            <RadzenLabel Text="Start" Style="width: 6rem;" />
+            <RadzenDatePicker @bind-Value="@model.Start" Name="Start" ShowTime="true" Style="width: 12rem;" />
+            <RadzenRequiredValidator Component="Start" Text="Start is required" />
+        </RadzenStack>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center" Wrap="FlexWrap.Wrap">
+            <RadzenLabel Text="End" Style="width: 6rem;" />
+            <RadzenDatePicker Name="End" @bind-Value="@model.End" ShowTime="true" Style="width: 12rem;" />
+            <RadzenRequiredValidator Component="End" Text="End is required" />
+        </RadzenStack>
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="JustifyContent.End">
+            <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                <RadzenButton ButtonType="Radzen.ButtonType.Submit" Text="Save" />
+            </RadzenStack>
+            <RadzenStack Orientation="Radzen.Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                <RadzenButton ButtonType="Radzen.ButtonType.Button" Text="Delete" Style="background-color:red" Click="OnDelete"/>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>

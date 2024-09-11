@@ -1,0 +1,35 @@
+﻿@inherits LayoutComponentBase
+
+<RadzenComponents/>
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudStack Justify="Justify.SpaceBetween" Row="true" AlignItems="MudBlazor.AlignItems.Center" Style="width:100%">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+            <MudLink Href="https://twitch.tv/yoda" Target="_blank"><MudText Style="color: white">Source Code</MudText></MudLink>
+        </MudStack>
+
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <div style="padding:20px">
+            @Body
+        </div>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

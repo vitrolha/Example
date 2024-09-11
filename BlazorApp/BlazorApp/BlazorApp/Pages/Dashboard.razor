@@ -1,0 +1,36 @@
+﻿﻿
+@page "/dashboards"
+
+@inject IToDoRepository toDoRepository
+
+<PageTitle>Dashboards</PageTitle>
+
+@code {
+    List<ToDoAmount> toDoDailyList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var list = await toDoRepository.GetAmountDailyInAWeek();
+        toDoDailyList = list.ToList();
+    }
+}
+
+@if(toDoDailyList.Count > 0)
+{
+    <!--Necessario Min=0 para exibir todos os valores-->
+
+    <RadzenStack class="rz-p-0 rz-p-md-6 rz-p-lg-12">
+        <RadzenRow>
+            <RadzenColumn Size="12">
+                <h4>ToDo Amount</h4>
+                <RadzenChart>
+                    <RadzenColumnSeries Data="@toDoDailyList" CategoryProperty="Date" Title="ToDos" ValueProperty="Amount">
+                    </RadzenColumnSeries>
+                    <RadzenColumnOptions Radius="5" Width="20" />
+                    <RadzenCategoryAxis Padding="20" Step="1" Min="0"/>
+                    <RadzenValueAxis Min="0"/>
+                </RadzenChart>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+}
