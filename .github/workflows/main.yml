@@ -34,7 +34,7 @@ jobs:
         run: dotnet workload install wasm-tools
 
       - name: Restore Dependencies
-        run: dotnet restore BlazorApp/BlazorApp/BlazorApp.csproj
+        run: dotnet restore BlazorApp/BlazorApp.sln
 
       - name: Build
         run: dotnet build -c Release --no-restore
