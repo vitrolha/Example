@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
+@inject NavigationManager navManager
+
 <RadzenComponents/>
 
 <MudThemeProvider />
@@ -11,7 +13,7 @@
     <MudAppBar>
         <MudStack Justify="Justify.SpaceBetween" Row="true" AlignItems="MudBlazor.AlignItems.Center" Style="width:100%">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-            <MudLink Href="https://twitch.tv/yoda" Target="_blank"><MudText Style="color: white">Source Code</MudText></MudLink>
+            <MudLink OnClick="OpenSourceCode" Href="@sourceCodeLink" Target="_blank"><MudText Style="color: white">Source Code</MudText></MudLink>
         </MudStack>
 
     </MudAppBar>
@@ -28,8 +30,22 @@
 @code {
     bool _drawerOpen = true;
 
+    string baseHref = "https://github.com/vitrolha/Example/tree/main/BlazorApp/BlazorApp/Pages/";
+
+    string sourceCodeLink = "";
+
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    void OpenSourceCode()
+    {
+        string page = navManager.ToBaseRelativePath(navManager.Uri);
+
+        if (page == "todo") sourceCodeLink = baseHref + "ToDoSchedule.razor";
+        if (page == "dashboards") sourceCodeLink = baseHref + "Dashboard.razor";
+        if (page == "/" || page == "") sourceCodeLink = baseHref + "Home.razor";
+        Console.WriteLine(sourceCodeLink);
     }
 }
