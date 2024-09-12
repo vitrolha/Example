@@ -1,4 +1,4 @@
 # Example
 
 #ToDo
-Colocar JWT, excluir dados a cada 24hrs pois está compartilhado.
+Colocar JWT, excluir dados a cada 12hrs pois está compartilhado.
