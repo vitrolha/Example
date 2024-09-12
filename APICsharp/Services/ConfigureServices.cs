@@ -23,7 +23,6 @@ namespace APICSharpToDoList.Services
             services.AddDbContext<AppDbContext>(x => x.UseSqlite(ConfigureDataBase.ConnectionString));
 
             services.AddScoped<IToDoRepository, ToDoRepository>();
-      
         }
     }
 

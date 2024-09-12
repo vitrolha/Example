@@ -11,5 +11,6 @@ namespace APICSharpToDoList.Interfaces
         Task Delete(int id);
         Task<IEnumerable<ToDo>> GetAll();
         Task<ToDo> GetById(int id);
+        Task<int> DeleteAllData();
     }
 }

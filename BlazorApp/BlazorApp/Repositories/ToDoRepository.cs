@@ -93,8 +93,8 @@ namespace BlazorApp.Repositories
         public async Task DeleteAll()
         {
             //Implementar na api csharp
-            Console.WriteLine("Cleaning localstorage...");
-            await localStorage.ClearAsync();
+            Console.WriteLine("Cleaning database...");
+            await csharpAPI.DeleteAsync(csharpAPI.BaseAddress + "deletealldata");
         }
 
     }

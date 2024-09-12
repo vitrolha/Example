@@ -88,5 +88,20 @@ namespace APICSharpToDoList.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+        [HttpDelete("deletealldata")]
+        public async Task<ActionResult> DeleteAllData()
+        {
+            try
+            {
+                int i = await toDoRepository.DeleteAllData();
+
+                return Ok(new { message = $"All {i} datas removed." });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }
