@@ -19,6 +19,19 @@ namespace BlazorApp.Services
 
             //Repositories
             services.AddScoped<IToDoRepository, ToDoRepository>();
+
+            //HttpClients
+            services.AddHttpClient(HttpServices.APICsharpClientName, x => x.BaseAddress = new Uri(HttpServices.APICsharpBaseAddress));
+            services.AddHttpClient(HttpServices.APIPythonClientName, x => x.BaseAddress = new Uri(HttpServices.APIPythonBaseAddres));
         }
+    }
+
+    public static class HttpServices
+    {
+        public static string APICsharpClientName = "apicsharp";
+        public static string APICsharpBaseAddress = "https://api-csharp-latest.onrender.com/api/ToDo/";
+
+        public static string APIPythonClientName = "apipython";
+        public static string APIPythonBaseAddres = "";
     }
 }
