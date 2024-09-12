@@ -23,7 +23,10 @@ COPY --from=build-env /out .
 # Criar o diretório para o banco de dados no container
 RUN mkdir -p /app/Data
 
+ENV ASPNETCORE_URLS=http://+:8080
+
 # Expor a porta
+# Porta precisa ser a mesma que a api esta escutando
 EXPOSE 8080
 
 # Comando para rodar a aplicação

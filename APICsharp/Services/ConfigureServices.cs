@@ -11,7 +11,7 @@ namespace APICSharpToDoList.Services
         {
             //Cors Conf
             services.AddCors(x => x.AddPolicy(CorsConf.CorsPolicyName, policy => policy
-                                                                        .WithOrigins([CorsConf.BaseAddresBackEnd, CorsConf.BaseAddresFrontEnd, CorsConf.APIPythonBaseAddres])
+                                                                        .WithOrigins([CorsConf.BaseAddresBackEnd, CorsConf.BaseAddresFrontEnd, CorsConf.APIPythonBaseAddres, CorsConf.BaseAddressFrontEndLocalHost])
                                                                         .AllowAnyHeader()
                                                                         .AllowAnyMethod()
                                                                         .AllowCredentials()));
@@ -31,7 +31,8 @@ namespace APICSharpToDoList.Services
     {
         public static string CorsPolicyName = "wasm";
         public static string BaseAddresBackEnd = "https://localhost:7156";
-        public static string BaseAddresFrontEnd = "https://vitrolha.github.io/ApplyingKnowledgeSite/";
+        public static string BaseAddresFrontEnd = "https://vitrolha.github.io";
         public static string APIPythonBaseAddres = "http://127.0.0.1:5000";
+        public static string BaseAddressFrontEndLocalHost = "https://localhost:7025";
     }
 }
