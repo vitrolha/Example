@@ -1,25 +1,30 @@
-# Use a imagem base do .NET SDK para compilar a aplicação
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Etapa 1: Build da aplicação
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-# Copie o csproj e restaure as dependências
+# Copiar csproj e restaurar as dependências
 COPY *.csproj ./
 RUN dotnet restore
 
-# Copie o restante do código e compile a aplicação
+# Copiar o restante do código da aplicação
 COPY . ./
-RUN dotnet publish -c Release -o out
 
-# Use a imagem base do .NET Runtime para executar a aplicação
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# Criar o diretório para o banco de dados
+RUN mkdir -p Data
+
+# Publicar a aplicação
+RUN dotnet publish -c Release -o /out
+
+# Etapa 2: Construir a imagem de produção
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/out .
+COPY --from=build-env /out .
 
-# Defina a variável de ambiente para o ASP.NET Core
-ENV ASPNETCORE_URLS=http://+:80
+# Criar o diretório para o banco de dados no container
+RUN mkdir -p /app/Data
 
-# Exponha a porta na qual a aplicação será executada
-EXPOSE 80
+# Expor a porta
+EXPOSE 8080
 
-# Comando para iniciar a aplicação
+# Comando para rodar a aplicação
 ENTRYPOINT ["dotnet", "APICSharpToDoList.dll"]

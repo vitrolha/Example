@@ -1,5 +1,6 @@
 ﻿using BlazorApp.Interfaces;
 using BlazorApp.Models;
+using BlazorApp.Services;
 using Blazored.LocalStorage;
 using Newtonsoft.Json;
 using System.Globalization;
@@ -18,66 +19,54 @@ namespace BlazorApp.Repositories
         //Key do localstorage
         private const string todoKey = "todo-data";
 
-        public ToDoRepository(ILocalStorageService localStorage)
+        //Usando API publicada
+        private readonly IHttpClientFactory httpClientFactory;
+
+        private HttpClient csharpAPI;
+
+        public ToDoRepository(ILocalStorageService localStorage, IHttpClientFactory httpClientFactory)
         {
             this.localStorage = localStorage;
+            this.httpClientFactory = httpClientFactory;
+            csharpAPI = httpClientFactory.CreateClient(HttpServices.APICsharpClientName);
         }
 
-        private async Task<List<ToDo>> GetToDoListFromLocalStorage()
+        private async Task<List<ToDo>> GetToDoListFromBd()
         {
-            var data = await localStorage.GetItemAsStringAsync(todoKey) ?? "";
-            return JsonConvert.DeserializeObject<List<ToDo>>(data) ?? new List<ToDo>();
+            var data = await csharpAPI.GetAsync(csharpAPI.BaseAddress + "getall");
+            return JsonConvert.DeserializeObject<List<ToDo>>(await data.Content.ReadAsStringAsync()) ?? new List<ToDo>();
         }
 
-        public async Task Add(ToDo toDo)
+        public async Task Add(ToDoCreate toDo)
         {
-            int id = 1;
-            var list = await GetToDoListFromLocalStorage();
-
-            if (list.Count <= 0) list.Add(new ToDo { Id = id, Title = toDo.Title, Start = toDo.Start, End = toDo.End });
-
-            else
-            {
-                int lastId = list.OrderBy(x => x.Id).Last().Id;
-                list.Add(new ToDo { Id = lastId + 1, Title = toDo.Title, Start = toDo.Start, End = toDo.End });
-            }
-
-            await localStorage.SetItemAsStringAsync(todoKey, JsonConvert.SerializeObject(list));
+            var data = JsonConvert.SerializeObject(toDo);
+            StringContent content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+            await csharpAPI.PostAsync(csharpAPI.BaseAddress + "create", content);
         }
 
         public async Task<IEnumerable<ToDo>> GetAll()
         {
-            var list = await GetToDoListFromLocalStorage();
+            var list = await GetToDoListFromBd();
             return list.AsEnumerable();
         }
 
         public async Task Delete(int id)
         {
-            var list = await GetToDoListFromLocalStorage();
-
-            if (list.Count <= 0) return;
-            ToDo toDoToRemove = list.Find(x => x.Id == id) ?? throw new Exception($"ToDo with id {id} not found.");
-            list.Remove(toDoToRemove);
-
-            await localStorage.SetItemAsStringAsync(todoKey, JsonConvert.SerializeObject(list));
+            await csharpAPI.DeleteAsync(csharpAPI.BaseAddress + $"delete/{id}");
         }
 
         public async Task Update(int id, ToDo toDo)
         {
-            var list = await GetToDoListFromLocalStorage();
-
-            if (list.Count <= 0) return;
-            ToDo toDoToUpdate = list.Find(x => x.Id == id) ?? throw new Exception($"ToDo with id {id} not found.");
-            toDoToUpdate.Title = toDo.Title;
-            toDoToUpdate.Start = toDo.Start;
-            toDoToUpdate.End = toDo.End;
-
-            await localStorage.SetItemAsStringAsync(todoKey, JsonConvert.SerializeObject(list));
+            var data = JsonConvert.SerializeObject(toDo);
+            StringContent content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+            await csharpAPI.PutAsync(csharpAPI.BaseAddress + $"update/{id}", content);
         }
 
         public async Task<IEnumerable<ToDoAmount>> GetAmountDailyInAWeek()
         {
-            var list = await GetToDoListFromLocalStorage();
+            //API em python aqui
+
+            var list = await GetToDoListFromBd();
 
             var toDoThisWeek = list.Where(x => x.Start >= DateTime.Now.Date && x.Start < DateTime.Now.AddDays(7).Date);
 
@@ -103,6 +92,7 @@ namespace BlazorApp.Repositories
 
         public async Task DeleteAll()
         {
+            //Implementar na api csharp
             Console.WriteLine("Cleaning localstorage...");
             await localStorage.ClearAsync();
         }
