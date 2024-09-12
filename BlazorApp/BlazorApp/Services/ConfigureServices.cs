@@ -29,8 +29,8 @@ namespace BlazorApp.Services
     public static class HttpServices
     {
         public static string APICsharpClientName = "apicsharp";
-        //public static string APICsharpBaseAddress = "https://api-csharp-latest.onrender.com/api/ToDo/";
-        public static string APICsharpBaseAddress = "http://localhost:8080/api/ToDo/";
+        public static string APICsharpBaseAddress = "https://api-csharp-latest.onrender.com/api/ToDo/";
+        //public static string APICsharpBaseAddress = "http://localhost:8080/api/ToDo/";
         public static string APIPythonClientName = "apipython";
         public static string APIPythonBaseAddres = "";
     }
