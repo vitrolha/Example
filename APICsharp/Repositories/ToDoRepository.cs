@@ -71,5 +71,19 @@ namespace APICSharpToDoList.Repositories
                 await context.SaveChangesAsync();
             }
         }
+
+        public async Task<int> DeleteAllData()
+        {
+            if (context.ToDoTable == null) throw new Exception("ToDo entity is null.");
+
+            var dataToDelete = await context.ToDoTable.ToListAsync();
+
+            var i = dataToDelete.Count;
+
+            context.ToDoTable.RemoveRange(dataToDelete);
+            await context.SaveChangesAsync();
+
+            return i;
+        }
     }
 }
